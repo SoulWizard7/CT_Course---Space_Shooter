@@ -11,8 +11,4 @@ namespace AuthoringAndMono
         public GameObject PlanetPrefab;
     }
 
-    public class OuterSpaceBaker : Baker<OuterSpaceMono>
-    {
-        
-    }
 }

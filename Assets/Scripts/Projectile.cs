@@ -23,7 +23,7 @@ public class Projectile : MonoBehaviour
     {
         if (!other.CompareTag("Enemy")) return;
         Debug.Log("Hit");
-        other.GetComponentInParent<AlienShip>().TakeDamage(damageAmount);
+        //other.GetComponentInParent<AlienShip>().TakeDamage(damageAmount);
         Destroy(gameObject);
     }
 }

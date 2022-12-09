@@ -4,6 +4,7 @@ using UnityEngine;
 
 public class AlienShip : MonoBehaviour
 {
+    /*
     public float speed;
 
     public int maxHealth = 2;
@@ -22,7 +23,6 @@ public class AlienShip : MonoBehaviour
     {
         transform.Translate(0, 0, -speed / 100, Space.World);
         if (spinn) transform.Rotate(Vector3.up, Time.deltaTime * 80, Space.Self);
-
     }
 
     public void TakeDamage(int damage)
@@ -33,5 +33,5 @@ public class AlienShip : MonoBehaviour
             Instantiate(explosion, transform.position, Quaternion.identity);
             Destroy(gameObject);
         }
-    }
+    }*/
 }
