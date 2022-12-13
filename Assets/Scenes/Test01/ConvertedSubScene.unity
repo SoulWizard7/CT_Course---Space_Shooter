@@ -152,13 +152,13 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: b00ec547fc93e844299071331f7f94fd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  asteroidVelocity: 5
+  asteroidVelocity: 3
   playerForce: 25
   bulletVelocity: 100
   numAsteroids: 60000
-  levelWidth: 3000
+  levelWidth: 5000
   levelHeight: 0
-  levelDepth: 3000
+  levelDepth: 5000
   mouseSpeed: 2
 --- !u!4 &249718956
 Transform:
@@ -187,6 +187,7 @@ GameObject:
   - component: {fileID: 853389774}
   - component: {fileID: 853389776}
   - component: {fileID: 853389777}
+  - component: {fileID: 853389778}
   m_Layer: 0
   m_Name: PrefabCollection
   m_TagString: Untagged
@@ -248,3 +249,16 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Prefab: {fileID: 1858194673071354112, guid: 80849f33fd0782c409b18fd213637b3c, type: 3}
+--- !u!114 &853389778
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 853389773}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9966226f452242d281dc381ffa7f53c7, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Prefab: {fileID: 3947839277874852840, guid: 26fe839efac5be64d8c738bd56a932df, type: 3}

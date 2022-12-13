@@ -42,7 +42,7 @@ namespace Systems
 
         protected override void OnUpdate()
         {
-            if (PlayerPrefab == Entity.Null || BulletPrefab == Entity.Null)
+            if (PlayerPrefab == Entity.Null || BulletPrefab == Entity.Null || CameraPrefab == Entity.Null)
             {
                 PlayerPrefab = GetSingleton<PlayerAuthoringComponent>().Prefab;
                 BulletPrefab = GetSingleton<BulletAuthoringComponent>().Prefab;
@@ -61,8 +61,8 @@ namespace Systems
 
             if (playerCount < 1)
             {
-                var player = EntityManager.Instantiate(PlayerPrefab);
-                var camera = EntityManager.Instantiate(CameraPrefab);
+                EntityManager.Instantiate(PlayerPrefab);
+                EntityManager.Instantiate(CameraPrefab);
                 return;
             }
 

@@ -83,19 +83,25 @@ public partial class AsteroidSpawnSystem : SystemBase
             for (int i = count; i < settings.numAsteroids; ++i)
             {
                 // ReSharper disable PossibleLossOfFraction
-                var xPos = random.NextFloat(-1f*(settings.levelWidth/2), settings.levelWidth/2);
-                var zPos = random.NextFloat(-1f*(settings.levelDepth/2), settings.levelDepth/2);
+                Translation position;
                 
-                var position = new Translation{Value = new float3(xPos, 0, zPos)};
+                do
+                {
+                    var xPos = random.NextFloat(-1f*(settings.levelWidth/2), settings.levelWidth/2);
+                    var zPos = random.NextFloat(-1f*(settings.levelDepth/2), settings.levelDepth/2);
+                
+                    position = new Translation{Value = new float3(xPos, 0, zPos)};
+                } while (math.distance(float3.zero, position.Value) <= 200); 
 
                 var entity = commandBuffer.Instantiate(asteroidPrefab);
                 commandBuffer.SetComponent(entity, position);
 
-                var velocity = new Vector3(random.NextFloat(-1f, 1f), 0, random.NextFloat(-1f, 1f));
+                //var velocity = new Vector3(random.NextFloat(-1f, 1f), 0, random.NextFloat(-1f, 1f));
+                var velocity = new Vector3(0,0,0) - new Vector3(position.Value.x, 0 , position.Value.z);
                 velocity.Normalize();
-                velocity *= random.NextFloat(1.0f, settings.asteroidVelocity);
+                velocity *= random.NextFloat(0.01f, settings.asteroidVelocity);
                 
-                var vel = new VelocityComponent{Value = new float3(velocity.x, 0, velocity.z)};
+                var vel = new VelocityComponent{Value = velocity};
                 
                 commandBuffer.SetComponent(entity, vel);
             }

@@ -12,6 +12,9 @@ namespace Systems
     [UpdateInGroup(typeof(LateSimulationSystemGroup))]
     public partial class AsteroidsDestructionSystem : SystemBase
     {
+        // THIS SCRIPT IS CALLED ASTEROIDS DESTRUCTION SYSTEM, BUT DESTORYS EVERYTHING WITH THE <DestroyTag> component (bullets & asteroids mainly) 
+        
+        
         private EndSimulationEntityCommandBufferSystem m_EndSimEcb;    
 
         protected override void OnCreate()
@@ -31,8 +34,6 @@ namespace Systems
 
                 }).ScheduleParallel();
 
-            //We add the dependencies of these jobs to the EndSimulationEntityCommandBufferSystem
-            //that will be playing back the structural changes recorded in this system
             m_EndSimEcb.AddJobHandleForProducer(Dependency);
         }
     }
