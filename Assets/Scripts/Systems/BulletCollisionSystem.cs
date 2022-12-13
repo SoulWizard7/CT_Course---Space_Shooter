@@ -8,7 +8,8 @@ using UnityEngine;
 
 namespace Systems
 {
-    
+    [UpdateInGroup(typeof(LateSimulationSystemGroup))]
+    [UpdateAfter(typeof(AsteroidsDestructionSystem))]  
     public partial class BulletCollisionSystem : SystemBase
     {
         private EndSimulationEntityCommandBufferSystem m_EndSimEcb;

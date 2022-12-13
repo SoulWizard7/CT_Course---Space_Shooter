@@ -7,6 +7,8 @@ using Unity.Transforms;
 using UnityEngine;
 using ComponentsAndTags;
 
+/*
+
 namespace Systems
 {
     //We are adding this system within the FixedStepSimulationGroup
@@ -60,4 +62,4 @@ public partial class AsteroidsOutOfBoundsSystem : SystemBase
         m_EndFixedStepSimECB.AddJobHandleForProducer(Dependency);
     }
 }
-}
+}*/

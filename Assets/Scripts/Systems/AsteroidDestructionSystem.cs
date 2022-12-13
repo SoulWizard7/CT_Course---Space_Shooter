@@ -26,9 +26,7 @@ namespace Systems
         {
             var commandBuffer = m_EndSimEcb.CreateCommandBuffer().AsParallelWriter();
 
-            Entities
-                .WithAll<DestroyTag>()
-                .ForEach((Entity entity, int entityInQueryIndex) =>
+            Entities.WithAll<DestroyTag>().ForEach((Entity entity, int entityInQueryIndex) =>
                 {
                     commandBuffer.DestroyEntity(entityInQueryIndex, entity);
 

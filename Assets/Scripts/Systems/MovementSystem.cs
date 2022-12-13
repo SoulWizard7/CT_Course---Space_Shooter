@@ -5,14 +5,20 @@ using Unity.Transforms;
 using UnityEngine;
 using Unity.Burst;
 
-public partial class MovementSystem : SystemBase
+namespace Systems
 {
-    protected override void OnUpdate()
+    [UpdateInGroup(typeof(LateSimulationSystemGroup))]
+    [UpdateAfter(typeof(AsteroidsDestructionSystem))]  
+    public partial class MovementSystem : SystemBase
     {
-        var deltaTime = Time.DeltaTime;
-        Entities.ForEach((ref Translation position, in VelocityComponent velocity) =>
+    
+        protected override void OnUpdate()
+        {
+            var deltaTime = Time.DeltaTime;
+            Entities.ForEach((ref Translation position, in VelocityComponent velocity) =>
             {
                 position.Value.xyz += velocity.Value * deltaTime;
             }).ScheduleParallel();
+        }
     }
 }

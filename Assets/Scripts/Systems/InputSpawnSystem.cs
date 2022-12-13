@@ -11,13 +11,10 @@ namespace Systems
 {
     public partial class InputSpawnSystem : SystemBase
     {
-        //This will be our query for Players
         private EntityQuery m_PlayerQuery;
 
-        //We will use the BeginSimulationEntityCommandBufferSystem for our structural changes
         private BeginSimulationEntityCommandBufferSystem m_BeginSimECB;
 
-        //This will save our Player prefab to be used to spawn Players
         private Entity PlayerPrefab;
         private Entity BulletPrefab;
         private Entity CameraPrefab;
@@ -59,20 +56,25 @@ namespace Systems
                 shoot = 1;
             }
 
+            var commandBuffer = m_BeginSimECB.CreateCommandBuffer();
             if (playerCount < 1)
             {
-                EntityManager.Instantiate(PlayerPrefab);
+                var player = EntityManager.Instantiate(PlayerPrefab);
+                Translation playerStart = new Translation {Value = new float3(0, 0, -40)};
+                commandBuffer.SetComponent(player, playerStart);
+                
                 EntityManager.Instantiate(CameraPrefab);
+
+                var sun = EntityManager.CreateEntity();
+                commandBuffer.AddComponent<SunHealthComponent>(sun);
+                commandBuffer.AddBuffer<SunDamageBufferElement>(sun);
                 return;
             }
 
-            var commandBuffer = m_BeginSimECB.CreateCommandBuffer();
-            
-            //We must declare our local variables before the .ForEach()
             var gameSettings = GetSingleton<GameSettingsComponent>();
             var bulletPrefab = BulletPrefab;
 
-            //we are going to implement rate limiting for shooting
+            
             var canShoot = false;
             if (UnityEngine.Time.time >= m_NextTime)
             {
