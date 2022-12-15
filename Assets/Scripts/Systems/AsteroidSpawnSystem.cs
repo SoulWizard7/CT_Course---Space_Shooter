@@ -22,6 +22,8 @@ public partial class AsteroidSpawnSystem : SystemBase
     //This will save our Asteroid prefab to be used to spawn Asteroids
     private Entity m_Prefab;
 
+    private bool spawn;
+
     protected override void OnCreate()
     {
         //This is an EntityQuery for our Asteroids, they must have an AsteroidTag
@@ -33,9 +35,8 @@ public partial class AsteroidSpawnSystem : SystemBase
         //This is an EntityQuery for the GameSettingsComponent which will drive how many Asteroids we spawn
         m_GameSettingsQuery = GetEntityQuery(ComponentType.ReadWrite<GameSettingsComponent>());
 
-        //This says "do not go to the OnUpdate method until an entity exists that meets this query"
-        //We are using GameObjectConversion to create our GameSettingsComponent so we need to make sure 
-        //The conversion process is complete before continuing
+        spawn = true;
+
         RequireForUpdate(m_GameSettingsQuery);
     }
     
@@ -46,31 +47,12 @@ public partial class AsteroidSpawnSystem : SystemBase
             m_Prefab = GetSingleton<AsteroidAuthoringComponent>().Prefab;
             return;
         }
+        
+        if (!spawn) return;
+        spawn = false;
+        
         var settings = GetSingleton<GameSettingsComponent>();
         var commandBuffer = m_BeginSimECB.CreateCommandBuffer();
-
-        #region StopSpawner 
-        // funky way to stop spawning
-           /*
-        if (!settings.isSpawning)
-        {
-            return;
-                
-        }
-        Entity v = GetSingletonEntity<GameSettingsComponent>();
-        commandBuffer.SetComponent(v, new GameSettingsComponent()
-        {
-            asteroidVelocity = settings.asteroidVelocity,
-            playerForce = settings.playerForce,
-            bulletVelocity = settings.bulletVelocity,
-            numAsteroids = settings.numAsteroids,
-            levelWidth = settings.levelWidth,
-            levelHeight = settings.levelHeight,
-            levelDepth = settings.levelDepth,
-            mouseSpeed = settings.mouseSpeed,  
-            isSpawning = false
-        });*/
-        #endregion
 
         //This provides the current amount of Asteroids in the EntityQuery
         var count = m_AsteroidQuery.CalculateEntityCountWithoutFiltering();
@@ -109,14 +91,5 @@ public partial class AsteroidSpawnSystem : SystemBase
 
         //This will add our dependency to be played back on the BeginSimulationEntityCommandBuffer
         m_BeginSimECB.AddJobHandleForProducer(Dependency);
-        
-        
-        
-        
-    }
-
-    protected override void OnDestroy()
-    {
-        
     }
 }

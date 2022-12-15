@@ -18,9 +18,7 @@ namespace AuthoringAndMono
         private void Update()
         {
             //Debug.Log(timerSingleton);
-            Debug.Log(sunHealth);
+            //Debug.Log(sunHealth);
         }
     }
-    
-    
 }

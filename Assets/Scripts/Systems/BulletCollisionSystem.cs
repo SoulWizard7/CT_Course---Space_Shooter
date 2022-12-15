@@ -9,36 +9,31 @@ using UnityEngine;
 namespace Systems
 {
     [UpdateInGroup(typeof(LateSimulationSystemGroup))]
-    [UpdateAfter(typeof(AsteroidsDestructionSystem))]  
+    [UpdateBefore(typeof(AsteroidsDestructionSystem))]  
     public partial class BulletCollisionSystem : SystemBase
     {
         private EndSimulationEntityCommandBufferSystem m_EndSimEcb;
-        private EntityQuery query;
+        private EntityQuery m_bulletQuery;
         
         protected override void OnCreate()
         {
             m_EndSimEcb = World.GetOrCreateSystem<EndSimulationEntityCommandBufferSystem>();
+
+            m_bulletQuery = GetEntityQuery(ComponentType.ReadWrite<BulletTag>());
+            
             RequireSingletonForUpdate<GameSettingsComponent>();
             RequireSingletonForUpdate<PlayerTag>();
         }
 
         protected override void OnUpdate()
         {
-            NativeList<Entity> bulletEntity = new NativeList<Entity>(Allocator.Temp);
-
             var commandBuffer = m_EndSimEcb.CreateCommandBuffer();
             var player = GetSingletonEntity<PlayerTag>();
             var playerPos = GetComponent<Translation>(player);
             
-            Entities.ForEach((Entity Entity, ref BulletTag bulletTag, ref Translation position) =>
-            {
-                bulletEntity.Add(Entity);
+            NativeArray<Entity> bulletEntityArray = m_bulletQuery.ToEntityArray(Allocator.Temp);
 
-            }).Run();
-
-            NativeArray<Entity> bulletEntityArray = bulletEntity.ToArray(Allocator.Temp);
-            
-            Entities.ForEach((Entity entity, int entityInQueryIndex, ref AsteroidTag Asteroids,
+            Entities.WithNone<DestroyTag>().ForEach((Entity asteroid, int entityInQueryIndex, in AsteroidTag Asteroids,
                 in Translation position) =>
             {
                 if (math.distancesq(playerPos.Value, position.Value) < 30000) // this line +~40fps w/ 60000 asteroids
@@ -49,7 +44,8 @@ namespace Systems
                         
                         if (math.distancesq(position.Value, bp) < 8)
                         {
-                            commandBuffer.AddComponent(entity, new DestroyTag());
+                            //commandBuffer.AddComponent(entityInQueryIndex, asteroid, new DestroyTag());
+                            commandBuffer.AddComponent(asteroid, new DestroyTag());
                             commandBuffer.AddComponent(bulletEntityArray[i], new DestroyTag());
                         }
                     }

@@ -7,12 +7,12 @@ using AuthoringAndMono;
 
 namespace Systems
 {
-    
+    [UpdateInGroup(typeof(LateSimulationSystemGroup))]
+    [UpdateBefore(typeof(AsteroidsDestructionSystem))]  
     public partial class SunBurstSystem : SystemBase
     {
         // This script handles the sun burst (once per minute) and also handles the damage that was added to the sun.
-        
-        
+
         private float m_timeToSunBurst = 55;
         private float m_timer = 0;
         private float m_burstRadius = 5;
@@ -35,7 +35,6 @@ namespace Systems
             if (m_timer >= m_timeToSunBurst)
             {
                 sunBurst = true;
-                //Debug.Log("SunBurst");
             }
 
             if (sunBurst)
@@ -51,17 +50,11 @@ namespace Systems
             }
 
             GameValuesMono.timerSingleton = m_timer;
-            
-            //if (!sunBurst) { return; }
 
             var commandBuffer = m_EndSimEcb.CreateCommandBuffer().AsParallelWriter();
             var sun = GetSingletonEntity<SunHealthComponent>();
 
-            GameValuesMono.sunHealth = GetComponent<SunHealthComponent>(sun).Value;
-            
-            //DynamicBuffer<SunDamageBufferElement> buffer = EntityManager.GetBuffer<SunDamageBufferElement>(sun);
-
-            Entities.WithAll<AsteroidTag>().ForEach((Entity entity, int entityInQueryIndex, in Translation position) =>
+            Entities.WithNone<DestroyTag>().WithAll<AsteroidTag>().ForEach((Entity entity, int entityInQueryIndex, in Translation position) =>
             {
                 if (math.distance(position.Value, float3.zero) < burstRadius)
                 {
@@ -74,11 +67,9 @@ namespace Systems
                         commandBuffer.AddComponent(entityInQueryIndex, entity, new DestroyTag());
                         
                         var damage = new SunDamageBufferElement { Value = 1 };
-                        //buffer.Add(damage);
                         commandBuffer.AppendToBuffer(entityInQueryIndex, sun, damage);
                     }
                 }
-
             }).ScheduleParallel();
             
             m_EndSimEcb.AddJobHandleForProducer(Dependency);

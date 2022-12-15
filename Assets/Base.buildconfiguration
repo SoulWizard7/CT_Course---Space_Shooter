@@ -1,0 +1,23 @@
+{
+    "Show": true,
+    "Dependencies": [],
+    "Components": [
+        {
+            "$type": "Unity.Build.Common.GeneralSettings, Unity.Build",
+            "ProductName": "CT Course - Space Shooter",
+            "CompanyName": "NiklasHögnabbaEnterprise",
+            "Version": "0.1"
+        },
+        {
+            "$type": "Unity.Build.Common.SceneList, Unity.Build",
+            "$version": 1,
+            "BuildCurrentScene": false,
+            "SceneInfos": [
+                {
+                    "Scene": "GlobalObjectId_V1-1-cd002e3d629272d4a830ffd1c699bb1f-102900000-0",
+                    "AutoLoad": true
+                }
+            ]
+        }
+    ]
+}

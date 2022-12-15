@@ -8,10 +8,9 @@ using Unity.Burst;
 namespace Systems
 {
     [UpdateInGroup(typeof(LateSimulationSystemGroup))]
-    [UpdateAfter(typeof(AsteroidsDestructionSystem))]  
+    [UpdateBefore(typeof(AsteroidsDestructionSystem))]  
     public partial class MovementSystem : SystemBase
     {
-    
         protected override void OnUpdate()
         {
             var deltaTime = Time.DeltaTime;
