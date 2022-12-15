@@ -12,9 +12,8 @@ namespace Systems
     [UpdateInGroup(typeof(LateSimulationSystemGroup))]
     public partial class AsteroidsDestructionSystem : SystemBase
     {
-        // THIS SCRIPT IS CALLED ASTEROIDS DESTRUCTION SYSTEM, BUT DESTORYS EVERYTHING WITH THE <DestroyTag> component (bullets & asteroids mainly) 
-        
-        
+        // THIS SCRIPT IS CALLED ASTEROIDS DESTRUCTION SYSTEM, BUT DESTORYS EVERYTHING WITH THE <DestroyTag> component (bullets & asteroids) 
+
         private EndSimulationEntityCommandBufferSystem m_EndSimEcb;    
 
         protected override void OnCreate()

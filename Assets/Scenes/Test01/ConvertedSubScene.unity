@@ -155,6 +155,7 @@ MonoBehaviour:
   asteroidVelocity: 6.5
   playerForce: 25
   bulletVelocity: 100
+  bulletsPerSecond: 12
   numAsteroids: 60000
   levelWidth: 5000
   levelHeight: 0

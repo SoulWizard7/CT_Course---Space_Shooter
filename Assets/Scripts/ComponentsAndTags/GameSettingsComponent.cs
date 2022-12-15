@@ -13,5 +13,6 @@ public struct GameSettingsComponent : IComponentData
     public int levelDepth;
     public float mouseSpeed;
 
-    public bool isSpawning;
+    public float bulletsPerSecond;
+
 }

@@ -10,31 +10,19 @@ using UnityEngine;
 
 public partial class AsteroidSpawnSystem : SystemBase
 {
-    //This will be our query for Asteroids
     private EntityQuery m_AsteroidQuery;
-
-    //We will use the BeginSimulationEntityCommandBufferSystem for our structural changes
     private BeginSimulationEntityCommandBufferSystem m_BeginSimECB;
-
-    //This will be our query to find GameSettingsComponent data to know how many and where to spawn Asteroids
     private EntityQuery m_GameSettingsQuery;
 
-    //This will save our Asteroid prefab to be used to spawn Asteroids
-    private Entity m_Prefab;
-
+    private Entity m_AsteroidPrefab;
     private bool spawn;
 
     protected override void OnCreate()
     {
-        //This is an EntityQuery for our Asteroids, they must have an AsteroidTag
         m_AsteroidQuery = GetEntityQuery(ComponentType.ReadWrite<AsteroidTag>());
-
-        //This will grab the BeginSimulationEntityCommandBuffer system to be used in OnUpdate
-        m_BeginSimECB = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
-
-        //This is an EntityQuery for the GameSettingsComponent which will drive how many Asteroids we spawn
         m_GameSettingsQuery = GetEntityQuery(ComponentType.ReadWrite<GameSettingsComponent>());
 
+        m_BeginSimECB = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
         spawn = true;
 
         RequireForUpdate(m_GameSettingsQuery);
@@ -42,9 +30,9 @@ public partial class AsteroidSpawnSystem : SystemBase
     
     protected override void OnUpdate()
     {
-        if (m_Prefab == Entity.Null)
+        if (m_AsteroidPrefab == Entity.Null)
         {
-            m_Prefab = GetSingleton<AsteroidAuthoringComponent>().Prefab;
+            m_AsteroidPrefab = GetSingleton<AsteroidAuthoringComponent>().Prefab;
             return;
         }
         
@@ -57,7 +45,7 @@ public partial class AsteroidSpawnSystem : SystemBase
         //This provides the current amount of Asteroids in the EntityQuery
         var count = m_AsteroidQuery.CalculateEntityCountWithoutFiltering();
        
-        var asteroidPrefab = m_Prefab;
+        var asteroidPrefab = m_AsteroidPrefab;
         var random = new Unity.Mathematics.Random((uint)Stopwatch.GetTimestamp());
 
         Job
@@ -78,10 +66,9 @@ public partial class AsteroidSpawnSystem : SystemBase
                 var entity = commandBuffer.Instantiate(asteroidPrefab);
                 commandBuffer.SetComponent(entity, position);
 
-                //var velocity = new Vector3(random.NextFloat(-1f, 1f), 0, random.NextFloat(-1f, 1f));
                 var velocity = new Vector3(0,0,0) - new Vector3(position.Value.x, 0 , position.Value.z);
                 velocity.Normalize();
-                velocity *= random.NextFloat(0.01f, settings.asteroidVelocity);
+                velocity *= random.NextFloat(1f, settings.asteroidVelocity);
                 
                 var vel = new VelocityComponent{Value = velocity};
                 
@@ -89,7 +76,6 @@ public partial class AsteroidSpawnSystem : SystemBase
             }
         }).Schedule();
 
-        //This will add our dependency to be played back on the BeginSimulationEntityCommandBuffer
         m_BeginSimECB.AddJobHandleForProducer(Dependency);
     }
 }

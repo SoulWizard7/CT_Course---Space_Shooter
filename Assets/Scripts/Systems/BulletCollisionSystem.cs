@@ -31,9 +31,11 @@ namespace Systems
             var player = GetSingletonEntity<PlayerTag>();
             var playerPos = GetComponent<Translation>(player);
             
-            NativeArray<Entity> bulletEntityArray = m_bulletQuery.ToEntityArray(Allocator.Temp);
+            NativeArray<Entity> bulletEntityArray = m_bulletQuery.ToEntityArray(Allocator.TempJob);
+            
+            // How can I make this multi-thread?
 
-            Entities.WithNone<DestroyTag>().ForEach((Entity asteroid, int entityInQueryIndex, in AsteroidTag Asteroids,
+            Entities.WithNone<DestroyTag>().ForEach((Entity asteroid, int entityInQueryIndex, in AsteroidTag asteroids,
                 in Translation position) =>
             {
                 if (math.distancesq(playerPos.Value, position.Value) < 30000) // this line +~40fps w/ 60000 asteroids
@@ -50,7 +52,9 @@ namespace Systems
                         }
                     }
                 }
-            }).Run();
+            }).Schedule();
+
+            bulletEntityArray.Dispose(Dependency);
             
             m_EndSimEcb.AddJobHandleForProducer(Dependency);
         }

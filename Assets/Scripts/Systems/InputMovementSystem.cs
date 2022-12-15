@@ -23,7 +23,7 @@ namespace Systems
             var gameSettings = GetSingleton<GameSettingsComponent>();
             var deltaTime = Time.DeltaTime;
     
-            //we will control thrust with WASD"
+            // WASD controls
             byte right, left, thrust, reverseThrust;
             right = left = thrust = reverseThrust = 0;
 

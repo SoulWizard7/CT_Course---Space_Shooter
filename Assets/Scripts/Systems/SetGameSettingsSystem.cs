@@ -5,6 +5,7 @@ public class SetGameSettingsSystem : UnityEngine.MonoBehaviour, IConvertGameObje
     public float asteroidVelocity = 10f;
     public float playerForce = 50f;
     public float bulletVelocity = 500f;
+    public float bulletsPerSecond = 10;
 
     public int numAsteroids = 200;
     public int levelWidth = 2048;
@@ -13,7 +14,6 @@ public class SetGameSettingsSystem : UnityEngine.MonoBehaviour, IConvertGameObje
 
     public float mouseSpeed = 2;
 
-    private bool isSpawning = true;
 
     public void Convert(Entity entity, EntityManager dstManager, GameObjectConversionSystem conversionSystem)
     {
@@ -22,6 +22,7 @@ public class SetGameSettingsSystem : UnityEngine.MonoBehaviour, IConvertGameObje
         settings.asteroidVelocity = asteroidVelocity;
         settings.playerForce = playerForce;
         settings.bulletVelocity = bulletVelocity;
+        settings.bulletsPerSecond = bulletsPerSecond;
 
         settings.numAsteroids = numAsteroids;
         settings.levelWidth = levelWidth;
@@ -29,7 +30,6 @@ public class SetGameSettingsSystem : UnityEngine.MonoBehaviour, IConvertGameObje
         settings.levelDepth = levelDepth;
 
         settings.mouseSpeed = mouseSpeed;
-        settings.isSpawning = isSpawning;
 
         dstManager.AddComponentData(entity, settings);
     }

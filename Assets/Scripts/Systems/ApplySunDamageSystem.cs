@@ -11,12 +11,11 @@ namespace Systems
     [UpdateAfter(typeof(AsteroidsDestructionSystem))]  
     public partial class ApplySunDamageSystem : SystemBase
     {
-        //private uiUpdate UIUpdate;
+        //private uiUpdate UIUpdate; 
 
         protected override void OnCreate()
         {
-            //UIUpdate = GameObject.Find("Canvas").GetComponent<uiUpdate>();
-            
+            //UIUpdate = GameObject.Find("Canvas").GetComponent<uiUpdate>(); //This only works in editor, not build
         }
 
         protected override void OnUpdate()

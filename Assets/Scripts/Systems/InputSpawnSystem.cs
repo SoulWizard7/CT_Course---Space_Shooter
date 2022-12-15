@@ -19,21 +19,14 @@ namespace Systems
         private Entity BulletPrefab;
         private Entity CameraPrefab;
 
-        //We are going to use this to rate limit bullets per second
-        //We could have included this in the game settings, no "ECS reason" not to
         private float m_PerSecond = 10f;
         private float m_NextTime = 0;
 
         protected override void OnCreate()
         {
-            //This is an EntityQuery for our Players, they must have an PlayerTag
             m_PlayerQuery = GetEntityQuery(ComponentType.ReadWrite<PlayerTag>());
-
-            //This will grab the BeginSimulationEntityCommandBuffer system to be used in OnUpdate
             m_BeginSimECB = World.GetOrCreateSystem<BeginSimulationEntityCommandBufferSystem>();
-
-            //We need the GameSettingsComponent to grab the bullet velocity
-            //When there is only 1 instance of a component (like GamesSettingsComponent) we can use "RequireSingletonForUpdate"
+            
             RequireSingletonForUpdate<GameSettingsComponent>();
         }
 
@@ -59,6 +52,8 @@ namespace Systems
             var commandBuffer = m_BeginSimECB.CreateCommandBuffer();
             if (playerCount < 1)
             {
+                // yes Im sorry I spawn the player and Camera here.
+                
                 var player = EntityManager.Instantiate(PlayerPrefab);
                 Translation playerStart = new Translation {Value = new float3(0, 0, -40)};
                 commandBuffer.SetComponent(player, playerStart);
@@ -73,8 +68,8 @@ namespace Systems
 
             var gameSettings = GetSingleton<GameSettingsComponent>();
             var bulletPrefab = BulletPrefab;
+            m_PerSecond = gameSettings.bulletsPerSecond;
 
-            
             var canShoot = false;
             if (UnityEngine.Time.time >= m_NextTime)
             {
@@ -85,18 +80,13 @@ namespace Systems
             Entities.ForEach((Entity entity, in PipeSwitchComponent pipeSwitchComponent, in Translation position,
                 in Rotation rotation, in VelocityComponent velocity, in BulletSpawnOffsetComponent bulletOffset) =>
             {
-                //If we don't have space bar pressed we don't have anything to do
                 if (shoot != 1 || !canShoot)
                 {
                     return;
                 }
 
-                // We create the bullet here
                 var bulletEntity = commandBuffer.Instantiate(bulletPrefab);
 
-                //we set the bullets position as the player's position + the bullet spawn offset
-                //math.mul(rotation.Value,bulletOffset.Value) finds the position of the bullet offset in the given rotation
-                //think of it as finding the LocalToParent of the bullet offset (because the offset needs to be rotated in the players direction)
                 Translation newPosition;
 
                 if (pipeSwitchComponent.Value)
@@ -116,9 +106,7 @@ namespace Systems
 
                 commandBuffer.SetComponent(bulletEntity, newPosition);
 
-                // bulletVelocity * math.mul(rotation.Value, new float3(0,0,1)).xyz) takes linear direction of where facing and multiplies by velocity
-                // adding to the players physics Velocity makes sure that it takes into account the already existing player velocity (so if shoot backwards while moving forwards it stays in place)
-                var vel = new VelocityComponent
+                 var vel = new VelocityComponent
                 {
                     Value = (gameSettings.bulletVelocity * math.mul(rotation.Value, new float3(0, 0, 1)).xyz) +
                             velocity.Value
